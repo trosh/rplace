@@ -28,7 +28,10 @@ while True:
     if not os.path.isfile(filename):
         break
     print("frame: {}".format(frame))
-    img = Image.new('RGB', (1000, 1000))
+    img = Image.new('P', (1000, 1000))
+    # Set image color palette. PIL palettes have all colors
+    # concatenated into one list: (255,255,255,228,228,228,...)
+    img.putpalette(sum(colors, ()))
     pixels = img.load()
     with open(filename, "rb") as f:
         for y in range(1000):
@@ -36,8 +39,6 @@ while True:
                 datum = ord(f.read(1))
                 color1 = datum >> 4
                 color2 = datum - (color1 << 4)
-                color1 = colors[color1]
-                color2 = colors[color2]
                 pixels[x*2,     y] = color1
                 pixels[x*2 + 1, y] = color2
     img.save(filename + ".png")
